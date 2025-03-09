@@ -1,0 +1,11 @@
+{
+    "inverter_host": "192.168.1.100",
+    "inverter_port": 8899,
+    "polling_interval": 300,
+    "ui_refresh_interval": 30,
+    "chart_refresh_interval": 300,
+    "web_host": "0.0.0.0",
+    "web_port": 5000,
+    "timezone": "Europe/Rome",
+    "db_path": "aurora_data.db"
+}

@@ -1,0 +1,205 @@
+<!-- templates/setup.html -->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurora Inverter Monitor - Configurazione</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 2rem;
+            background-color: #f5f5f5;
+        }
+        .card {
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #343a40;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.8rem 1.2rem;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-text {
+            font-size: 0.85rem;
+        }
+        .success-message {
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="pb-3 mb-4 border-bottom">
+            <h1 class="display-5 fw-bold">Aurora Inverter Monitor</h1>
+            <p class="lead">Configurazione parametri</p>
+        </header>
+
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="alert alert-success success-message" id="successMessage">
+                    <strong>Configurazione salvata con successo!</strong> Le modifiche saranno applicate al prossimo riavvio del sistema.
+                </div>
+
+                <form id="setupForm">
+                    <div class="card mb-4">
+                        <div class="card-header">Connessione Inverter</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="inverterHost" class="form-label">Indirizzo IP Inverter</label>
+                                <input type="text" class="form-control" id="inverterHost" name="inverterHost" required>
+                                <div class="form-text">Indirizzo IP dell'inverter Aurora (es. 192.168.1.100)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="inverterPort" class="form-label">Porta Inverter</label>
+                                <input type="number" class="form-control" id="inverterPort" name="inverterPort" min="1" max="65535" required>
+                                <div class="form-text">Porta di comunicazione dell'inverter (default: 8899)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">Frequenze di Aggiornamento</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="pollingInterval" class="form-label">Intervallo di acquisizione dati (secondi)</label>
+                                <input type="number" class="form-control" id="pollingInterval" name="pollingInterval" min="10" max="3600" required>
+                                <div class="form-text">Frequenza con cui vengono acquisiti i dati dall'inverter (default: 300 secondi)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="uiRefreshInterval" class="form-label">Aggiornamento interfaccia in tempo reale (secondi)</label>
+                                <input type="number" class="form-control" id="uiRefreshInterval" name="uiRefreshInterval" min="5" max="600" required>
+                                <div class="form-text">Frequenza con cui viene aggiornata l'interfaccia con i dati più recenti (default: 30 secondi)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="chartRefreshInterval" class="form-label">Aggiornamento grafico (secondi)</label>
+                                <input type="number" class="form-control" id="chartRefreshInterval" name="chartRefreshInterval" min="60" max="3600" required>
+                                <div class="form-text">Frequenza con cui viene aggiornato il grafico (default: 300 secondi)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">Server Web</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="webHost" class="form-label">Indirizzo interfaccia web</label>
+                                <input type="text" class="form-control" id="webHost" name="webHost" required>
+                                <div class="form-text">Indirizzo IP su cui il server web è in ascolto (0.0.0.0 per tutte le interfacce)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="webPort" class="form-label">Porta Web</label>
+                                <input type="number" class="form-control" id="webPort" name="webPort" min="1" max="65535" required>
+                                <div class="form-text">Porta su cui il server web è in ascolto (default: 5000)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">Opzioni Generali</div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="timezone" class="form-label">Fuso Orario</label>
+                                <select class="form-select" id="timezone" name="timezone">
+                                    <option value="Europe/Rome">Europe/Rome</option>
+                                    <option value="Europe/London">Europe/London</option>
+                                    <option value="Europe/Paris">Europe/Paris</option>
+                                    <option value="Europe/Berlin">Europe/Berlin</option>
+                                    <option value="Europe/Madrid">Europe/Madrid</option>
+                                    <option value="America/New_York">America/New_York</option>
+                                </select>
+                                <div class="form-text">Fuso orario per la visualizzazione delle date</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dbPath" class="form-label">Percorso Database</label>
+                                <input type="text" class="form-control" id="dbPath" name="dbPath">
+                                <div class="form-text">Percorso al file del database SQLite (default: /data/aurora_data.db)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+                        <a href="/" class="btn btn-secondary me-md-2">Torna alla Dashboard</a>
+                        <button type="submit" class="btn btn-primary">Salva Configurazione</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load current configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/config')
+                .then(response => response.json())
+                .then(data => {
+                    // Populate form with current values
+                    document.getElementById('inverterHost').value = data.inverter_host || '';
+                    document.getElementById('inverterPort').value = data.inverter_port || 8899;
+                    document.getElementById('pollingInterval').value = data.polling_interval || 300;
+                    document.getElementById('uiRefreshInterval').value = data.ui_refresh_interval || 30;
+                    document.getElementById('chartRefreshInterval').value = data.chart_refresh_interval || 300;
+                    document.getElementById('webHost').value = data.web_host || '0.0.0.0';
+                    document.getElementById('webPort').value = data.web_port || 5000;
+                    document.getElementById('timezone').value = data.timezone || 'Europe/Rome';
+                    document.getElementById('dbPath').value = data.db_path || '/data/aurora_data.db';
+                })
+                .catch(error => console.error('Error loading configuration:', error));
+        });
+
+        // Handle form submission
+        document.getElementById('setupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Prepare data
+            const formData = {
+                inverter_host: document.getElementById('inverterHost').value,
+                inverter_port: parseInt(document.getElementById('inverterPort').value),
+                polling_interval: parseInt(document.getElementById('pollingInterval').value),
+                ui_refresh_interval: parseInt(document.getElementById('uiRefreshInterval').value),
+                chart_refresh_interval: parseInt(document.getElementById('chartRefreshInterval').value),
+                web_host: document.getElementById('webHost').value,
+                web_port: parseInt(document.getElementById('webPort').value),
+                timezone: document.getElementById('timezone').value,
+                db_path: document.getElementById('dbPath').value
+            };
+            
+            // Send to server
+            fetch('/api/config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                } else {
+                    alert('Errore durante il salvataggio della configurazione: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving configuration:', error);
+                alert('Errore durante il salvataggio della configurazione');
+            });
+        });
+    </script>
+</body>
+</html>

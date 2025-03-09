@@ -1,0 +1,23 @@
+services:
+  aurora-monitor:
+    build: .
+    container_name: aurora-monitor
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - aurora-config:/app/config
+      - aurora-db:/data/db
+    environment:
+      - INVERTER_HOST=192.168.1.100  # Change to your inverter's IP
+      - INVERTER_PORT=8899           # Change if your inverter uses a different port
+      - POLLING_INTERVAL=300         # Polling interval in seconds (5 minutes)
+      - TZ=Europe/Rome               # Set your timezone
+      - CONFIG_FILE=/app/config/aurora_config.json
+      - DB_PATH=/data/db/aurora_data.db
+
+volumes:
+  aurora-config:
+    driver: local
+  aurora-db:
+    driver: local
